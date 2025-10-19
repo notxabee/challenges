@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>bee's challenges!!!</title>
+  <style>
+    body {
+      color:white;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('newbg.jpg');
+      background-size:cover;
+      background-position: center center;
+      margin: 0;
+      height: 100vh;
+      font-family:Verdana, Geneva, Tahoma, sans-serif;
+    }
+    h1, h2, h3, p {
+      text-align:center;
+    }
+    .cbutton {
+      width: 180px;
+      height: 180px;
+      border: none;      
+      border-radius:20px;
+      background-size:cover;
+      background-position:center;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), var(--btnimage);
+      color: white;
+      font-size:30px;
+      transition: 0.2s;
+      cursor: pointer;
+      text-align:center;
+    }
+    .cbutton:hover {
+      transform: translateY(-5px);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), var(--btnimage);
+    }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+    }
+    .overlay.active {
+      display: flex;
+    }
+    .cpopup {
+      background: rgb(20, 20, 20);
+      border: solid white;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 350px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transform: scale(0.8);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .overlay.active .cpopup {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .cpopup img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    .submit {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #4f46e5;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .submit:hover {
+      background-color: #4338ca;
+    }
+    .close {
+      margin-top: 15px;
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .close:hover {
+      background-color: #dc2626;
+    }
+    .cset {
+      display:flex;
+      align-items: flex-start;
+      text-align:center;
+      justify-content: center;
+      gap: 20px;
+    }
+  </style>
+</head>
+<body>
+<h1>bee's challenges</h1>
+<p>fun little OSINT challenges by me</p>
+<br>
+<h2>First Challenges</h2>
+<div class="cset">
+  <button class="cbutton" onclick="openPopup('Parking Garage', 'Identify the city in which this image was taken.', 'osint1.png', 'portland')" style="--btnimage: url('osint1.png')">Parking Garage</button>
+  <button class="cbutton" onclick="openPopup('Distinguished Architecture', 'Identify the name of the most prominent building in the image.', 'osint2.png','Allegheny County Courthouse')" style="--btnimage: url('osint2.png')">Spiffy Architecture</button>
+  <button class="cbutton" onclick="openPopup('Concrete Buildings', 'Identify the city in which this image was taken. (Include diacritics)', 'osint3.png', 'düsseldorf')" style="--btnimage: url('osint3.png')">Concrete Buildings</button>
+  <button class="cbutton" onclick="openPopup('Mystery Cruise', 'Identify the IMO number of the ship pictured.', 'osint4.png', '9349863')" style="--btnimage: url('osint4.png')">Mystery Cruise</button>
+  <button class="cbutton" onclick="openPopup('Familiar Sight', 'Identify the floor number from which this image was taken.', 'osint5.png', '16')" style="--btnimage: url('osint5.png')">Familiar Sight</button>
+</div>
+<br>
+<h2>Silly Stuff</h2>
+<div class="cset">
+  <button class="cbutton" onclick="openPopup('Moon Cow', 'Identify the name of the lunar crater located behind the cow.', 'sosint1.png', 'tycho')" style="--btnimage: url('sosint1.png')">Moon Cow</button>
+  <button class="cbutton" onclick="openPopup('Quite Ironic', 'Identify the type of building located to the left of this sign.', 'sosint2.png', 'church')" style="--btnimage: url('sosint2.png')">Quite Ironic</button>
+  <button class="cbutton" onclick="openPopup('How To Drive A Roundabout', 'Identify the name of the roundabout pictured. (Include diacritics)', 'sosint3.png', 'niepodległości')" style="--btnimage: url('sosint3.png')">How To Drive A Roundabout</button>
+</div>
+<br>
+<h2>(more coming soon!)</h2>
+<br>
+    <div class="overlay" id="coverlay">
+    <div class="cpopup">
+        <h2 id="ctitle"></h2>
+        <img id="cimage" src="">
+        <p id="ctext"></p>
+        <p id="status"></p>
+    <div class="input-group">
+        <input type="text" id="inputans">
+        <button class="submit" id="csubmit" onclick="checkAnswer()">Submit</button>
+    </div>
+      <button class="close" onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const overlaym = document.getElementById('coverlay');
+    const titlem = document.getElementById('ctitle');
+    const textm = document.getElementById('ctext');
+    const imgm = document.getElementById('cimage');
+    const inputm = document.getElementById('inputans');
+    const submitm = document.getElementById('csubmit');
+    const statusm = document.getElementById('status');
+    // idk the difference but like it works so i don't care
+    const popupm = document.querySelector(".cpopup");
+
+    let correctans = '';
+
+    function openPopup(title, text, imgSrc, answer) {
+      imgm.src = imgSrc;      
+      titlem.textContent = title;
+      textm.textContent = text;
+      correctans = answer.toLowerCase().trim();
+      inputm.value = '';
+      submitm.classList.remove('correct');
+      overlaym.classList.add('active');
+    }
+    function closePopup() {
+      titlem.textContent = "";
+      textm.textContent = "";
+      statusm.textContent = "";
+      imgm.src = "";
+      popupm.style.background = "rgb(20, 20, 20)";
+      overlaym.classList.remove('active');
+    }
+    function checkAnswer() {
+      const answerm = inputm.value.toLowerCase().trim();
+      if(answerm.includes(correctans)) {
+        popupm.style.background = "#4CAF50";
+        statusm.style.color = "rgb(000,255,000)";
+        statusm.textContent = "Correct!"
+      } else {
+        statusm.style.color = "rgb(255,000,000)";
+        statusm.textContent = "Incorrect, try again!"
+      }
+    }
+  </script>
+
+</body>
+</html>
